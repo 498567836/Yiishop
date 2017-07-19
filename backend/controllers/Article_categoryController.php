@@ -9,9 +9,10 @@ use yii\web\UploadedFile;
 
 class Article_categoryController extends \yii\web\Controller
 {
-    public function actionIndex()
+    public function actionIndex($status=1)
     {
-        $query = ArticleCategory::find()->orderBy('id DESC');
+        $status=($status!='del')?'status!=-1':'status=-1';
+        $query = ArticleCategory::find()->where($status)->orderBy('id DESC')->orderBy('sort DESC');
         //总条数
         $total = $query->count();
         //每页显示条数 3
@@ -59,5 +60,6 @@ class Article_categoryController extends \yii\web\Controller
         $model->save();
         return $this->redirect(['article_category/index']);
     }
+
 
 }

@@ -1,4 +1,7 @@
-<?=\yii\bootstrap\Html::a('添加商品',['article_category/add'],['class'=>'btn btn-success']);?>
+<?=\yii\bootstrap\Html::a('添加文章分类',['article_category/add'],['class'=>'btn btn-success col-md-1']);?>
+<?='<div class="col-md-9"></div>'?>
+<?=\yii\bootstrap\Html::a('返回',['article_category/index'],['class'=>'btn btn-info btn-sm col-md-1']);?>
+<?=\yii\bootstrap\Html::a('回收站',['article_category/index','status'=>'del'],['class'=>'btn btn-warning btn-sm col-md-1']);?>
     <br/><br/>
     <table class="table   table-bordered table-condensed table-striped table-hover " >
         <tr>

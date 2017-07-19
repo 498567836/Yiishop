@@ -1,4 +1,7 @@
-<?=\yii\bootstrap\Html::a('添加商品',['brand/add'],['class'=>'btn btn-success']);?>
+<?=\yii\bootstrap\Html::a('添加商品',['brand/add'],['class'=>'btn btn-success col-md-1']);?>
+<?='<div class="col-md-9"></div>'?>
+<?=\yii\bootstrap\Html::a('返回',['brand/index'],['class'=>'btn btn-info btn-sm  col-md-1']);?>
+<?=\yii\bootstrap\Html::a('回收站',['brand/index','status'=>'del'],['class'=>'btn btn-warning btn-sm  col-md-1']);?>
 <br/><br/>
 <table class="table   table-bordered table-condensed table-striped table-hover " >
     <tr>
@@ -15,7 +18,7 @@
             <td><?=$brand->id?></td>
             <td><?=$brand->name?></td>
             <td><?=$brand->intro?></td>
-            <td><?=\yii\bootstrap\Html::img($brand->logo,['height'=>60])?></td>
+            <td><?=\yii\bootstrap\Html::img($brand->logo?$brand->logo: ( '/upload/brand/default.jpg'),['height'=>60])?></td>
             <td><?=$brand->sort?></td>
             <td><?=\backend\models\Brand::status_options(true)[$brand->status]?></td>
             <td>

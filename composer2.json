@@ -18,10 +18,10 @@
         "yiisoft/yii2": "~2.0.6",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
-        "flyok666/yii2-uploadifive": "~1.0.0",
-        "flyok666/yii2-qiniu": "~1.0.0",
-        "kucha/ueditor": "*"
+        "flyok666/yii2-uploadifive": "~1.0.0"
     },
+    //composer require flyok666/yii2-uploadifive ~1.0.0 -vvv
+    //composer require flyok666/yii2-qiniu ~1.0.0 -vvv
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
