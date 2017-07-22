@@ -50,6 +50,7 @@ class BrandController extends \yii\web\Controller
 //                $file=explode("/", $model->logo)[count(explode("/", $model->logo))-1];
 //                //var_dump($file);exit;
 //                if(empty($file)){unlink('upload/'.$file);}
+                \Yii::$app->session->setFlash('success','添加成功');
                 return $this->redirect(['brand/index']);
             }
         }
@@ -84,6 +85,7 @@ class BrandController extends \yii\web\Controller
                     $model->logo=$fileName;
                 }else{}
                 $model->save(false);
+                \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['brand/index']);
             }
         }
@@ -94,6 +96,7 @@ class BrandController extends \yii\web\Controller
         $model = Brand::findOne($id);
         $model->status=-1;
         $model->save();
+        \Yii::$app->session->setFlash('success','删除成功');
         return $this->redirect(['brand/index']);
     }
 

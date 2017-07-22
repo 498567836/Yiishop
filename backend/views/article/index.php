@@ -1,5 +1,11 @@
 <?=\yii\bootstrap\Html::a('添加文章',['article/add'],['class'=>'btn btn-success col-md-1']);?>
-<?='<div class="col-md-9"></div>'?>
+<?='<div class="col-md-4"></div>'?>
+    <?php
+    $form=\yii\bootstrap\ActiveForm::begin();
+    echo $form->field($search,'search')->textInput(['class'=>'form-horizontal  col-md-1 form-control']);
+    echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-info  col-md-1']);
+    \yii\bootstrap\ActiveForm::end();
+    ?>
 <?=\yii\bootstrap\Html::a('返回',['article/index'],['class'=>'btn btn-info btn-sm col-md-1']);?>
 <?=\yii\bootstrap\Html::a('回收站',['article/index','status'=>'del'],['class'=>'btn btn-warning btn-sm col-md-1']);?>
     <br/><br/>
@@ -35,5 +41,11 @@
 //分页工具条
 echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'末页']);
 
-
+$this->registerJs(new \yii\web\JsExpression(
+    <<<JS
+window.setTimeout(function() {
+  $('#w2-success-0').attr('style','display:none');
+},3000);
+JS
+));
 

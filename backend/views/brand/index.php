@@ -32,4 +32,10 @@
 //分页工具条
 echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'末页']);
 
-
+$this->registerJs(new \yii\web\JsExpression(
+    <<<JS
+window.setTimeout(function() {
+  $('#w2-success-0').attr('style','display:none');
+},3000);
+JS
+));

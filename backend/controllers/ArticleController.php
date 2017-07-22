@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\Articledetail;
+use backend\models\Search;
 use yii\data\Pagination;
 use yii\web\Request;
 
@@ -12,6 +13,14 @@ class ArticleController extends \yii\web\Controller
 {
     public function actionIndex($status=1)
     {
+        $search=new Search();
+        //$search=new Search($this::className());
+        //var_dump($search->name);
+        $request = new Request();
+        if ($request->isPost) {
+            $search->load($request->post());
+            var_dump($search->search);exit;
+        }
         $status=($status!='del')?'status!=-1':'status=-1';
         $query = Article::find()->where($status)->orderBy('id DESC')->orderBy('sort DESC');
         //总条数
@@ -24,7 +33,7 @@ class ArticleController extends \yii\web\Controller
             'defaultPageSize'=>$perPage
         ]);
         $model=$query->limit($pager->limit)->offset($pager->offset)->all();
-        return $this->render('index',['model'=>$model,'pager'=>$pager]);
+        return $this->render('index',['model'=>$model,'pager'=>$pager,'search'=>$search]);
     }
     public function actionAdd()
     {
@@ -39,6 +48,7 @@ class ArticleController extends \yii\web\Controller
                 $model->save();
                 $articledetail->article_id=$model->id;
                 $articledetail->save();
+                \Yii::$app->session->setFlash('success','添加成功');
                 return $this->redirect(['article/index']);
             }
         }
@@ -59,6 +69,7 @@ class ArticleController extends \yii\web\Controller
                 $model->save();
                 $articledetail->article_id=$model->id;
                 $articledetail->save();
+                \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['article/index']);
             }
         }
@@ -70,6 +81,13 @@ class ArticleController extends \yii\web\Controller
         $model = Article::findOne($id);
         $articledetail=Articledetail::findOne($id);
         return $this->render('show', ['model' => $model,'articledetail'=>$articledetail]);
+    }
+    public function actionDelete($id){
+        $model = Article::findOne($id);
+        $model->status=-1;
+        $model->save();
+        \Yii::$app->session->setFlash('success','删除成功');
+        return $this->redirect(['article/index']);
     }
     public function actions()
     {
