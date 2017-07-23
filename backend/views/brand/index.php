@@ -36,6 +36,7 @@ $this->registerJs(new \yii\web\JsExpression(
     <<<JS
 window.setTimeout(function() {
   $('#w2-success-0').attr('style','display:none');
+  $('#w2-danger-0').attr('style','display:none');
 },3000);
 JS
 ));

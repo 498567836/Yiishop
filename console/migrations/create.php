@@ -5,5 +5,9 @@
 //yii migrate/create create_article_table
 //yii migrate/create create_article_detail_table
 //yii migrate/create create_goods_category_table
+// cd yii2shop & yii migrate/create create_goods_day_count_table
+//yii migrate/create create_goods_table
+//yii migrate/create create_goods_intro_table
+//yii migrate/create create_goods_gallery_table
 //执行
 //yii migrate

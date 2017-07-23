@@ -11,10 +11,10 @@
             <th>分类介绍</th>
             <th>编辑</th>
         </tr>
-        <?php foreach ($model as $brand): ?>
+        <?php $page=isset($_GET['page'])?$_GET['page']:1; $num=$pager->defaultPageSize*($page-1)+1; foreach ($model as $brand): ?>
             <tr>
-                <td><?=$brand->id?></td>
-                <td><?=$brand->name?></td>
+                <td><?=$num++?></td>
+                <td><?=str_repeat('——',$brand->depth).$brand->name?></td>
                 <td><?php if($brand->parent_id){$name=\backend\models\GoodsCategory::findOne($brand->parent_id);echo ($name->name);}else{echo'顶级分类';}?></td>
                 <td><?=$brand->intro?></td>
                 <td>

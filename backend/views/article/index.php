@@ -1,11 +1,13 @@
 <?=\yii\bootstrap\Html::a('添加文章',['article/add'],['class'=>'btn btn-success col-md-1']);?>
-<?='<div class="col-md-4"></div>'?>
-    <?php
-    $form=\yii\bootstrap\ActiveForm::begin();
-    echo $form->field($search,'search')->textInput(['class'=>'form-horizontal  col-md-1 form-control']);
-    echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-info  col-md-1']);
-    \yii\bootstrap\ActiveForm::end();
-    ?>
+<?='<div class="col-md-3"></div>'?>
+<?=' <form method="post"><input type="text" name="search" class=" form-control col-md-2" style="width: 188px;height:31px "><input type="submit" class="btn btn-info btn-sm col-md-1 " value="搜索"></form>'?>
+<?='<div class="col-md-3"></div>'?>
+<!--    --><?php
+//    $form=\yii\bootstrap\ActiveForm::begin();
+//    echo $form->field($search,'search')->textInput(['class'=>'form-horizontal  col-md-1']);
+//    echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-info  col-md-1']);
+//    \yii\bootstrap\ActiveForm::end();
+//    ?>
 <?=\yii\bootstrap\Html::a('返回',['article/index'],['class'=>'btn btn-info btn-sm col-md-1']);?>
 <?=\yii\bootstrap\Html::a('回收站',['article/index','status'=>'del'],['class'=>'btn btn-warning btn-sm col-md-1']);?>
     <br/><br/>
@@ -45,6 +47,7 @@ $this->registerJs(new \yii\web\JsExpression(
     <<<JS
 window.setTimeout(function() {
   $('#w2-success-0').attr('style','display:none');
+    $('#w2-danger-0').attr('style','display:none');
 },3000);
 JS
 ));
