@@ -40,7 +40,7 @@ class GoodsGallery extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'goods_id' => '商品id',
-            'path' => '图片地址',
+            'path' => '添加相册',
         ];
     }
 }

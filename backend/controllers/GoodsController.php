@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
+use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
@@ -144,52 +145,59 @@ class GoodsController extends \yii\web\Controller
                 'baseUrl' => '@web/upload',
                 'enableCsrf' => true, // default
                 'postFieldName' => 'Filedata', // default
-                //BEGIN METHOD
-                //'format' => [$this, 'methodName'],
-                //END METHOD
-                //BEGIN CLOSURE BY-HASH
                 'overwriteIfExist' => true,//如果文件已存在，是否覆盖
-                /* 'format' => function (UploadAction $action) {
-                     $fileext = $action->uploadfile->getExtension();
-                     $filename = sha1_file($action->uploadfile->tempName);
-                     return "{$filename}.{$fileext}";
-                 },*/
-                //END CLOSURE BY-HASH
-                //BEGIN CLOSURE BY TIME
                 'format' => function (UploadAction $action) {
                     $fileext = $action->uploadfile->getExtension();
-//                    $filehash = sha1(uniqid() . time());
-//                    $p1 = substr($filehash, 0, 2);
-//                    $p2 = substr($filehash, 2, 2);
-//                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
                     $fileName='brand/'.date('Ymd').'/'.uniqid().'.'.$fileext;
                     return $fileName;
                 },//文件的保存方式
-                //END CLOSURE BY TIME
                 'validateOptions' => [
-                    'extensions' => ['jpg', 'png'],
+                    'extensions' => ['jpg', 'png','gif'],
                     'maxSize' => 1 * 1024 * 1024, //file size
                 ],
                 'beforeValidate' => function (UploadAction $action) {
-                    //throw new Exception('test error');
                 },
                 'afterValidate' => function (UploadAction $action) {},
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
-                    //$action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
-//                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
-//                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
-//                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
                     //将图片上传到七牛云
                     $qiniu = new Qiniu(\Yii::$app->params['qiniu']);
                     $qiniu->uploadFile(
                         $action->getSavePath(), $action->getWebUrl()
                     );
-                    $url = $qiniu->getLink($action->getWebUrl());
-                    $action->output['fileUrl']  = $url;
+                    $goods_id = \Yii::$app->request->post('goods_id');
+                    if ( $goods_id){
+                        $goodsgellery=new GoodsGallery();
+                        $goodsgellery->goods_id=$goods_id;
+                        $goodsgellery->path=$action->getWebUrl();
+                        $goodsgellery->save();
+                        $action->output['fileUrl']  =$goodsgellery->path;
+                        $action->output['id']  =$goodsgellery->id;
+                    }else{
+                        $action->output['fileUrl']  =$action->getWebUrl();
+                    }
                 },
             ],
         ];
+    }
+    public function actionShow($id){
+        $model=Goods::findOne($id);
+        $photos=GoodsGallery::find()->where(['=','goods_id',$id])->all();
+        $goodsintro=GoodsIntro::findOne(['=','goods_id',$id]);
+        return $this->render('show',['model'=>$model,'photos' => $photos,'goodsintro'=>$goodsintro]);
+    }
+    public function actionPhotos($id){
+        $photos=GoodsGallery::find()->where(['=','goods_id',$id])->all();
+        return $this->render('photos', ['photos' => $photos,'goods_id'=>$id]);
+    }
+    public function actionDelphoto(){
+        //var_dump($_GET['id']);exit;
+        //var_dump($_POST['id']);
+        $id=\Yii::$app->request->post('id');
+        //var_dump($id);exit;
+        if(GoodsGallery::deleteAll(['id'=>$id])){
+            return 'success';
+        }
     }
 
 

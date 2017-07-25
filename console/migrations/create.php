@@ -9,5 +9,6 @@
 //yii migrate/create create_goods_table
 //yii migrate/create create_goods_intro_table
 //yii migrate/create create_goods_gallery_table
+//yii migrate/create create_admin_table
 //执行
 //yii migrate

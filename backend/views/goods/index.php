@@ -61,10 +61,10 @@
                 <td><?=date('Y-m-d',$brand->create_time)?></td>
                 <td><?=$brand->view_times?></td>
                 <td>
-                    <?=\yii\bootstrap\Html::a('详情',['goods/show','id'=>$brand->id],['class'=>'btn btn-info btn-sm'])?>
-                    <?=\yii\bootstrap\Html::a('相册',['goods/photo','id'=>$brand->id],['class'=>'btn btn-info btn-sm']).'<br/>'?>
-                    <?=\yii\bootstrap\Html::a('修改',['goods/edit','id'=>$brand->id],['class'=>'btn btn-info btn-sm',])?>
-                    <?=\yii\bootstrap\Html::a('删除',['goods/delete','id'=>$brand->id],['class'=>'btn btn-danger btn-sm'])?>
+                    <?=\yii\bootstrap\Html::a('详情',['goods/show','id'=>$brand->id],['class'=>'btn btn-info btn-sm glyphicon glyphicon-list-alt'])?>
+                    <?=\yii\bootstrap\Html::a('相册',['goods/photos','id'=>$brand->id],['class'=>'btn btn-success btn-sm glyphicon glyphicon-picture']).'<br/>'?>
+                    <?=\yii\bootstrap\Html::a('修改',['goods/edit','id'=>$brand->id],['class'=>'btn btn-warning btn-sm glyphicon glyphicon-pencil',])?>
+                    <?=\yii\bootstrap\Html::a('删除',['goods/delete','id'=>$brand->id],['class'=>'btn btn-danger btn-sm glyphicon glyphicon-trash'])?>
                 </td>
             </tr>
         <?php endforeach;?>
