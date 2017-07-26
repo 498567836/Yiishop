@@ -8,11 +8,14 @@ class LoginForm extends Model{
     public $email;
     public $password;
     public $code;
+    public $remember;
     public function rules()
     {
         return [
-            [['name','password'],'required','message'=>'{attribute}必填'],
-            [['email'],'safe'],
+            [['name'],'required','message'=>'{attribute}必填'],
+            ['password','required','message'=>'{attribute}必填'],
+            [['email'],'email'],
+            [['remember'],'boolean'],
             //验证码验证规则
             ['code','captcha','captchaAction'=>'admin/captcha'],
         ];
@@ -23,31 +26,17 @@ class LoginForm extends Model{
             'name'=>'用户名',
             'password'=>'密码',
             'email'=>'邮箱',
+            'remember'=>'记住我',
         ];
-    }
-    public function login2(IdentityInterface $identity, $duration = 0)
-    {
-        if ($this->beforeLogin($identity, false, $duration)) {
-            $this->switchIdentity($identity, $duration);
-            $id = $identity->getId();
-            $ip = Yii::$app->getRequest()->getUserIP();
-            if ($this->enableSession) {
-                $log = "User '$id' logged in from $ip with duration $duration.";
-            } else {
-                $log = "User '$id' logged in from $ip. Session not enabled.";
-            }
-            Yii::info($log, __METHOD__);
-            $this->afterLogin($identity, false, $duration);
-        }
-        return !$this->getIsGuest();
     }
 public function login(){
     $admin=Admin::findOne(['name'=>$this->name]);
     if ($admin){
         if(\Yii::$app->security->validatePassword($this->password,$admin->password)){
-            \Yii::$app->user->login($admin);
+            \Yii::$app->user->login($admin,$this->remember?60*10:0);
             $admin->last_login_time=time();
-            $admin->last_login_ip=$_SERVER["REMOTE_ADDR"];
+            //$admin->last_login_ip=$_SERVER["REMOTE_ADDR"];
+            $admin->last_login_ip=ip2long(\Yii::$app->request->userIP);
             //var_dump($admin->last_login_time=time(),$admin->last_login_ip);exit;
             $admin->save(false);
             return true;

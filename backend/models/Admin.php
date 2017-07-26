@@ -22,6 +22,11 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public $username;
     public $repassword;
+    public $oldpassword;
+    //const SCENARIO_LOGIN = 'login';
+    const SCENARIO_ADD = 'add';
+    const SCENARIO_EDIT = 'edit';
+    const SCENARIO_EDITSELF = 'editself';
     public static function tableName()
     {
         return 'admin';
@@ -33,14 +38,22 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'password','repassword'], 'required','message'=>'{attribute}必填'],
-            [['last_login_time'], 'integer'],
+            [['name'], 'required','message'=>'{attribute}必填'],
+            [['oldpassword'], 'required','on' =>[self::SCENARIO_EDITSELF],'message'=>'{attribute}必填'],
+            [['password'], 'required','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDITSELF] ,'message'=>'{attribute}必填'],
+            [['repassword'], 'required','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDITSELF] ,'message'=>'{attribute}必填'],
             [['name'], 'string', 'max' => 20, 'min' => 5],
             [['password','repassword'], 'string', 'max' => 100, 'min' => 5],
-            [['email'], 'string', 'max' => 50],
             [['name'], 'unique'],
             [['email'], 'unique'],
-            [['repassword'],'compare', 'compareAttribute'=>'password','message'=>'两次密码必须一致'],
+            [['email'], 'email'],
+            [['repassword'],'compare', 'compareAttribute'=>'password','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDIT,self::SCENARIO_EDITSELF],'message'=>'两次密码必须一致'],
+            //使用自定义函数过滤
+            ['repassword', 'filter', 'filter' => function() { // 在此处标准化输入的email
+                if($this->password){
+                    return 'required';
+                }
+                }]
         ];
     }
 
@@ -57,6 +70,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'email' => '邮箱',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录IP',
+            'oldpassword' => '旧密码',
         ];
     }
 
@@ -112,6 +126,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function getAuthKey()
     {
         // TODO: Implement getAuthKey() method.
+        return $this->auth_key;
     }
 
     /**
@@ -125,5 +140,6 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
+        return $this->auth_key==$authKey;
     }
 }

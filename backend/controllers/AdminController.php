@@ -28,8 +28,10 @@ class AdminController extends \yii\web\Controller
     }
     public function actionAdd(){
         $model=new Admin();
+        $model->scenario = Admin::SCENARIO_ADD;
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $model->password= \Yii::$app->security->generatePasswordHash($model->password);
+            $model->auth_key = \Yii::$app->security->generateRandomString();
             $model->save(false);
             \Yii::$app->session->setFlash('success','添加成功');
             return $this->redirect(['admin/index']);
@@ -38,14 +40,48 @@ class AdminController extends \yii\web\Controller
     }
     public function actionEdit($id){
         $model=Admin::findOne($id);
+        $model->scenario = Admin::SCENARIO_EDIT;
         $model->password=null;
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
-            $model->password= \Yii::$app->security->generatePasswordHash($model->password);
+            if ($model->password){
+                $model->password= \Yii::$app->security->generatePasswordHash($model->password);
+            }else{
+                $model->password=$model->getOldAttribute('password');
+            }
             $model->save(false);
             \Yii::$app->session->setFlash('success','修改成功');
             return $this->redirect(['admin/index']);
         }
         return $this->render('add',['model'=>$model]);
+    }
+    public function actionEditSelf(){
+        if (\Yii::$app->user->isGuest){
+            return $this->redirect(['admin/login']);
+        }else{
+            $model =  \Yii::$app->user->identity;
+            $model->scenario = Admin::SCENARIO_EDITSELF;
+            $model->password=null;
+            if($model->load(\Yii::$app->request->post()) && $model->validate()){
+                if(\Yii::$app->security->validatePassword($model->oldpassword,$model->getOldAttribute('password'))){
+                    if ($model->password){
+                        if (\Yii::$app->security->validatePassword($model->password,$model->getOldAttribute('password'))){
+                            \Yii::$app->session->setFlash('danger','新密码与旧密码不能一样');
+                            return $this->render('add',['model'=>$model]);
+                        }
+                        $model->password= \Yii::$app->security->generatePasswordHash($model->password);
+                    }else{
+                        $model->password=$model->getOldAttribute('password');
+                    }
+                    $model->save(false);
+                    \Yii::$app->session->setFlash('success','修改成功');
+                    return $this->redirect(['admin/index']);
+                }else{
+                    \Yii::$app->session->setFlash('danger','原密码错误');
+                }
+            }
+            return $this->render('add',['model'=>$model]);
+        }
+
     }
     public function actionDelete($id){
         if(Admin::deleteAll(['id'=>$id])){
@@ -65,6 +101,8 @@ class AdminController extends \yii\web\Controller
             //var_dump(11111);exit;
             \Yii::$app->session->setFlash('success','登录成功');
             return $this->redirect(['admin/index']);
+        }elseif(\Yii::$app->request->post()){
+            \Yii::$app->session->setFlash('danger','登录失败');
         }
         return $this->render('login',['model'=>$model]);
     }
