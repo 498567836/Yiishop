@@ -8,6 +8,8 @@ class m170725_064052_alter_admin_table extends Migration
     {
         $this->addColumn('admin','auth_key','string');
         $this->addCommentOnColumn('admin','auth_key','密钥');
+        $this->addColumn('admin','status','integer');
+        $this->addCommentOnColumn('admin','status','状态');
     }
 
     public function safeDown()
@@ -16,6 +18,7 @@ class m170725_064052_alter_admin_table extends Migration
 
         //return false;
         $this->dropColumn('admin','auth_key');
+        $this->dropColumn('admin','status');
 
     }
 

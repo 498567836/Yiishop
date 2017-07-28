@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -23,10 +24,15 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public $username;
     public $repassword;
     public $oldpassword;
+    public $roles;
     //const SCENARIO_LOGIN = 'login';
     const SCENARIO_ADD = 'add';
     const SCENARIO_EDIT = 'edit';
     const SCENARIO_EDITSELF = 'editself';
+    public static function getRoles(){
+        return ArrayHelper::map(\Yii::$app->authManager->getRoles(),'name','name');
+    }
+    public $getstatus=[1=>'正常',0=>'禁用'];
     public static function tableName()
     {
         return 'admin';
@@ -38,7 +44,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name'], 'required','message'=>'{attribute}必填'],
+            [['name','email','status'], 'required','message'=>'{attribute}必填'],
             [['oldpassword'], 'required','on' =>[self::SCENARIO_EDITSELF],'message'=>'{attribute}必填'],
             [['password'], 'required','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDITSELF] ,'message'=>'{attribute}必填'],
             [['repassword'], 'required','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDITSELF] ,'message'=>'{attribute}必填'],
@@ -47,6 +53,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             [['name'], 'unique'],
             [['email'], 'unique'],
             [['email'], 'email'],
+            [['roles'], 'safe'],
             [['repassword'],'compare', 'compareAttribute'=>'password','on' =>[self::SCENARIO_ADD,self::SCENARIO_EDIT,self::SCENARIO_EDITSELF],'message'=>'两次密码必须一致'],
             //使用自定义函数过滤
             ['repassword', 'filter', 'filter' => function() { // 在此处标准化输入的email
@@ -71,6 +78,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录IP',
             'oldpassword' => '旧密码',
+            'roles' => '角色',
+            'status' => '状态',
         ];
     }
 

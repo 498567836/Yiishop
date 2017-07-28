@@ -1,14 +1,16 @@
 <?php
     $form=\yii\bootstrap\ActiveForm::begin();
     echo $form->field($model,'name')->textInput(!$model->isNewRecord?['readonly'=>"readonly"]:[]);
-if(!$model->isNewRecord && \Yii::$app->user->id!=1){
+if($model->scenario == \backend\models\Admin::SCENARIO_EDITSELF){
     echo $form->field($model,'oldpassword')->passwordInput();
 }
 echo $form->field($model,'password')->passwordInput();
-if(!$model->isNewRecord) {
-    echo $form->field($model, 'repassword')->passwordInput();
+echo $form->field($model, 'repassword')->passwordInput();
+echo $form->field($model,'email')->textInput(($model->scenario == \backend\models\Admin::SCENARIO_EDITSELF)?['readonly'=>"readonly"]:[]);
+if($model->scenario != \backend\models\Admin::SCENARIO_EDITSELF) {
+    echo $form->field($model,'status',['inline'=>1])->radioList($model->getstatus);
+    echo $form->field($model,'roles',['inline'=>1])->checkboxList(\backend\models\Admin::getRoles());
 }
-    echo $form->field($model,'email')->textInput((!$model->isNewRecord && \Yii::$app->user->id!=1)?['readonly'=>"readonly"]:[]);
     echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-info']);
     \yii\bootstrap\ActiveForm::end();
 

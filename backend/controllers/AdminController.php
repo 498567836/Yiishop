@@ -7,6 +7,7 @@ use backend\models\LoginForm;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use yii\web\Request;
 
 class AdminController extends \yii\web\Controller
@@ -17,7 +18,7 @@ class AdminController extends \yii\web\Controller
         //总条数
         $total = $query->count();
         //每页显示条数 3
-        $perPage = 3;
+        $perPage = 5;
         //分页工具类
         $pager = new Pagination([
             'totalCount'=>$total,
@@ -29,10 +30,21 @@ class AdminController extends \yii\web\Controller
     public function actionAdd(){
         $model=new Admin();
         $model->scenario = Admin::SCENARIO_ADD;
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+        $model->status=1;
+        if($model->load(\Yii::$app->request->post()) ){
+            //var_dump($model);exit;
             $model->password= \Yii::$app->security->generatePasswordHash($model->password);
             $model->auth_key = \Yii::$app->security->generateRandomString();
+            //var_dump($model->getErrors());exit;
             $model->save(false);
+            //var_dump($id);
+            $authManager=\Yii::$app->authManager;
+            if(is_array($model->roles)){
+                foreach ($model->roles as $role){
+                    $role=\Yii::$app->authManager->getRole($role);
+                    $authManager->assign($role,$model->id);
+                }
+            }
             \Yii::$app->session->setFlash('success','添加成功');
             return $this->redirect(['admin/index']);
         }
@@ -42,6 +54,7 @@ class AdminController extends \yii\web\Controller
         $model=Admin::findOne($id);
         $model->scenario = Admin::SCENARIO_EDIT;
         $model->password=null;
+        $model->roles=ArrayHelper::map(\Yii::$app->authManager->getRolesByUser($id),'name','name');
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             if ($model->password){
                 $model->password= \Yii::$app->security->generatePasswordHash($model->password);
@@ -49,6 +62,16 @@ class AdminController extends \yii\web\Controller
                 $model->password=$model->getOldAttribute('password');
             }
             $model->save(false);
+            $authManager=\Yii::$app->authManager;
+            //$authManager->removeAllAssignments();
+            $authManager->revokeAll($model->id);
+            //var_dump($authManager->getRolesByUser($model->id));exit;
+            if (is_array($model->roles)){
+                foreach ($model->roles as $role){
+                    $role=$authManager->getRole($role);
+                    $authManager->assign($role,$model->id);
+                }
+            }
             \Yii::$app->session->setFlash('success','修改成功');
             return $this->redirect(['admin/index']);
         }
@@ -85,6 +108,7 @@ class AdminController extends \yii\web\Controller
     }
     public function actionDelete($id){
         if(Admin::deleteAll(['id'=>$id])){
+            \Yii::$app->authManager->revokeAll($id);
             \Yii::$app->session->setFlash('success','删除成功');
         }else{
             \Yii::$app->session->setFlash('success','删除失败');
