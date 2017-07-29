@@ -7,6 +7,7 @@ use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use backend\models\RbacFilter;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
@@ -199,6 +200,13 @@ class GoodsController extends \yii\web\Controller
             return 'success';
         }
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 }

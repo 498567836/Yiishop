@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\Articledetail;
+use backend\models\RbacFilter;
 use backend\models\Search;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -97,6 +98,13 @@ class ArticleController extends \yii\web\Controller
             ]
         ];
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 }

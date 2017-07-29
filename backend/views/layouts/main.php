@@ -29,22 +29,38 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => '商城后台',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => '主页', 'url' => ['/admin/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => '登录', 'url' => ['/admin/login']];
     } else {
+        foreach(\backend\models\Menu::find()->where('pid=0')->all() as $value) {
+            $a=[];
+            foreach (\backend\models\Menu::find()->where(['pid'=>$value->id])->all() as $value2) {
+                //if ($value->id == $value2->pid) {
+                    if(\Yii::$app->user->can($value2->url)){
+                        //var_dump(\Yii::$app->user->id);
+                        //var_dump($value2->url);
+                        //var_dump(\Yii::$app->user->can($value2->url));exit;
+                        $a[]=['label' => $value2->name, 'url' => ['/' . $value2->url]];
+                    }
+               // }
+            }
+            if(!empty($a)){
+                $menuItems[]=['label' => $value->name, 'items' => $a] ;
+            }
+        }
         $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
+            . Html::beginForm(['/admin/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '注销 (' . Yii::$app->user->identity->name . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

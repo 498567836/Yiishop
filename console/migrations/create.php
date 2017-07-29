@@ -11,5 +11,7 @@
 //yii migrate/create create_goods_gallery_table
 //yii migrate/create create_admin_table
 //yii migrate/create alter_admin_table
+//yii migrate/create create_menu_table
+//yii migrate/create create_member_table
 //执行
 //yii migrate

@@ -9,6 +9,13 @@ class LoginForm extends Model{
     public $password;
     public $code;
     public $remember;
+    public $times;
+    public static $timesoption=[
+            1*60*60=>'1小时',
+            4*60*60=>'4小时',
+            1*24*60*60=>'1天',
+            7*24*60*60=>'7天',
+        ];
     public function rules()
     {
         return [
@@ -16,6 +23,7 @@ class LoginForm extends Model{
             ['password','required','message'=>'{attribute}必填'],
             [['email'],'email'],
             [['remember'],'boolean'],
+            [['times'],'integer'],
             //验证码验证规则
             ['code','captcha','captchaAction'=>'admin/captcha'],
         ];
@@ -27,13 +35,14 @@ class LoginForm extends Model{
             'password'=>'密码',
             'email'=>'邮箱',
             'remember'=>'记住我',
+            'times'=>'记住时间',
         ];
     }
 public function login(){
     $admin=Admin::findOne(['name'=>$this->name]);
     if ($admin){
         if(\Yii::$app->security->validatePassword($this->password,$admin->password)){
-            \Yii::$app->user->login($admin,$this->remember?60*10:0);
+            \Yii::$app->user->login($admin,$this->remember?$this->times:0);
             $admin->last_login_time=time();
             //$admin->last_login_ip=$_SERVER["REMOTE_ADDR"];
             $admin->last_login_ip=ip2long(\Yii::$app->request->userIP);

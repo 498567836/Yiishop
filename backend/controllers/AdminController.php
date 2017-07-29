@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Admin;
 use backend\models\LoginForm;
+use backend\models\RbacFilter;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
@@ -134,7 +135,7 @@ class AdminController extends \yii\web\Controller
         \Yii::$app->user->logout();
         $model = new LoginForm();
         \Yii::$app->session->setFlash('success','注销成功');
-        return $this->render('login',['model'=>$model]);
+        return $this->redirect('login');
     }
     public function actionUser()
     {
@@ -156,23 +157,27 @@ class AdminController extends \yii\web\Controller
     public function behaviors()
     {
         return [
-            'ACF'=>[
-                'class'=>AccessControl::className(),
-                'only'=>['index','add','edit','delete'],//哪些操作需要使用该过滤器
-                'rules'=>[
-                    [
-                        'allow'=>true,//是否允许
-                        'actions'=>['index','add','edit','delete'],//指定操作
-                        'roles'=>['@'],//指定角色 ?表示未认证用户(未登录) @表示已认证用户(已登录)
-                    ],
-                    [
-                        'allow'=>true,
-                        'actions'=>['index'],
-                        'roles'=>['?'],
-                    ],
-                ]
-            ]
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                'only'=>['index','add','edit','delete','edit-self'],
+            ],
 
+//            'ACF'=>[
+//                'class'=>AccessControl::className(),
+//                'only'=>['index','add','edit','delete'],//哪些操作需要使用该过滤器
+//                'rules'=>[
+//                    [
+//                        'allow'=>true,//是否允许
+//                        'actions'=>['index','add','edit','delete'],//指定操作
+//                        'roles'=>['@'],//指定角色 ?表示未认证用户(未登录) @表示已认证用户(已登录)
+//                    ],
+//                    [
+//                        'allow'=>true,
+//                        'actions'=>['index'],
+//                        'roles'=>['?'],
+//                    ],
+//                ]
+//            ]
         ];
     }
 //定义验证码操作
@@ -196,4 +201,5 @@ class AdminController extends \yii\web\Controller
             ]
         ];
     }
+
 }

@@ -32,7 +32,12 @@ echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'ä¸‹ä
 $this->registerJs(new \yii\web\JsExpression(
     <<<JS
 window.setTimeout(function() {
+  $('#w1-success-0').attr('style','display:none');
   $('#w2-success-0').attr('style','display:none');
+  $('#w3-success-0').attr('style','display:none');
+  $('#w4-success-0').attr('style','display:none');
+  $('#w5-success-0').attr('style','display:none');
+  $('.alert-success alert fade in').attr('style','display:none');
   $('#w2-danger-0').attr('style','display:none');
 },3000);
 JS

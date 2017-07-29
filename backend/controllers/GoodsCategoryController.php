@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\GoodsCategory;
 use backend\models\GoodsCategoryQuery;
+use backend\models\RbacFilter;
 use yii\data\Pagination;
 use yii\db\Exception;
 
@@ -80,7 +81,14 @@ class GoodsCategoryController extends \yii\web\Controller
         }
         return $this->redirect(['goods-category/index']);
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 
 }

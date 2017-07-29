@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Brand;
+use backend\models\RbacFilter;
 use flyok666\qiniu\Qiniu;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -175,7 +176,14 @@ class BrandController extends \yii\web\Controller
         $url = $qiniu->getLink($key);
         var_dump($url);
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 
 }

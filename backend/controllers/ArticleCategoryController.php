@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ArticleCategory;
+use backend\models\RbacFilter;
 use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
@@ -63,6 +64,13 @@ class ArticleCategoryController extends \yii\web\Controller
         \Yii::$app->session->setFlash('success','删除成功');
         return $this->redirect(['article-category/index']);
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 }

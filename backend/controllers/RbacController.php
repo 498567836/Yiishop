@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\PermissionForm;
+use backend\models\RbacFilter;
 use backend\models\RoleForm;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -126,7 +127,14 @@ public function actionAddRole(){
         return $this->redirect(['index-role']);
 
     }
-
+    public function behaviors(){
+        return[
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'only'=>['add-article','del-article','view-article'],
+            ]
+        ];
+    }
 
 
 
