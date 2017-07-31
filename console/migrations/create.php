@@ -13,5 +13,6 @@
 //yii migrate/create alter_admin_table
 //yii migrate/create create_menu_table
 //yii migrate/create create_member_table
+//yii migrate/create create_address_table
 //执行
 //yii migrate

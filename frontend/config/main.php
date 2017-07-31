@@ -12,12 +12,25 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        //禁用原来css样式
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => [],
+                ],
+            ],
+        ],
+        //禁用原来css样式
+
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'loginUrl'=>['member/login'],
+            //'identityClass' => 'frontend\models\Member',
+            'identityClass' => \frontend\models\Member::className(),
             'enableAutoLogin' => true,
+            //'authTimeout' => 1*60,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
