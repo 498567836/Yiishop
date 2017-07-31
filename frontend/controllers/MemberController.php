@@ -119,6 +119,20 @@ public function actionRegister(){
             $this->redirect('address');
         }
     }
+    //测试发送短信功能
+    public function actionTestSms()
+    {
+        $code = rand(1000,9999);
+        $tel = '13551167510';
+        $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$code])->send();
+        var_dump($res);exit;
+        //将短信验证码保存redis（session，mysql）
+        \Yii::$app->session->set('code_'.$tel,$code);
+        //验证
+        $code2 = \Yii::$app->session->get('code_'.$tel);
+        if($code == $code2){
 
+        }
+    }
 
 }
