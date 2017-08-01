@@ -10,30 +10,14 @@
     <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/common.css" type="text/css">
     <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/bottomnav.css" type="text/css">
     <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/footer.css" type="text/css">
-
     <!--引入jqzoom css -->
     <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/jqzoom.css" type="text/css">
-
-<!--    <script type="text/javascript" src="--><?//=Yii::getAlias('@web')?><!--/js/jquery-1.8.3.min.js"></script>-->
-<!--    <script type="text/javascript" src="--><?//=Yii::getAlias('@web')?><!--/js/header.js"></script>-->
-<!--    <script type="text/javascript" src="--><?//=Yii::getAlias('@web')?><!--/js/goods.js"></script>-->
-<!--    <script type="text/javascript" src="--><?//=Yii::getAlias('@web')?><!--/js/jqzoom-core.js"></script>-->
-    <?php
-    Yii::$app->view->registerJsFile('/js/jquery-1.11.0.js',['depends' => [\yii\web\JqueryAsset::className()]]);
-    Yii::$app->view->registerJsFile('/js/header.js',['depends' => [\yii\web\JqueryAsset::className()]]);
-    Yii::$app->view->registerJsFile('/js/goods.js',['depends' => [\yii\web\JqueryAsset::className()]]);
-    Yii::$app->view->registerJsFile('/js/jqzoom-core.js',['depends' => [\yii\web\JqueryAsset::className()]]);
-
-    $this->registerJs(new \yii\web\JsExpression(
-        <<<JS
- document.execCommand("BackgroundImageCache", false, true);
-        $('#w0').remove();
-    $('body div :first').removeAttr("class");
-    $(function(){
-        $('footer').remove();
-        $('#yii-debug-toolbar').remove();
-    });
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/header.js"></script>
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/goods.js"></script>
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/jqzoom-core.js"></script>
     <!-- jqzoom 效果 -->
+    <script type="text/javascript">
         $(function(){
             $('.jqzoom').jqzoom({
                 zoomType: 'standard',
@@ -45,10 +29,7 @@
                 zoomHeight:400
             });
         })
-JS
-    ));
-    ?>
-
+    </script>
 </head>
 <body>
 <!-- 顶部导航 start -->
@@ -572,8 +553,8 @@ JS
             <!-- 图片预览区域 start -->
             <div class="preview fl">
                 <div class="midpic">
-                    <a href="images/preview_l1.jpg" class="jqzoom" rel="gal1">   <!-- 第一幅图片的大图 class 和 rel属性不能更改 -->
-                        <img src="<?=Yii::getAlias('@web')?>/images/preview_m1.jpg" alt="" />               <!-- 第一幅图片的中图 -->
+                    <a href="<?= $goods_gallery[0]->path; ?> " style="height: 800px;width: 800px" class="jqzoom" rel="gal1">   <!-- 第一幅图片的大图 class 和 rel属性不能更改 -->
+                        <img src="<?= $goods_gallery[0]->path; ?> " style="height: 350px;width: 350px" alt="" />               <!-- 第一幅图片的中图 -->
                     </a>
                 </div>
 
@@ -584,49 +565,11 @@ JS
                     <a href="javascript:;" id="forward" class="on"></a>
                     <div class="smallpic_wrap">
                         <ul>
-                            <?php foreach ($goods_gallery as $value): ?>
+                            <?php $n=0; foreach ($goods_gallery as $value): $n++ ?>
                             <li class="cur">
-                                <a class="zoomThumbActive" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '<?=$value->path?>',largeimage: '<?=$value->path?>'}"><img src="<?=$value->path?>"></a>
+                                <a class="<?=($n==1)?'zoomThumbActive':'' ?>" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '<?=$value->path?>',largeimage: '<?=$value->path?>'}"><img src="<?=$value->path?>"></a>
                             </li>
                             <?php endforeach; ?>
-                            <li>
-                                <a href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'images/preview_m2.jpg',largeimage: 'images/preview_l2.jpg'}"><img src="<?=Yii::getAlias('@web')?>/images/preview_s2.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m3.jpg',largeimage: 'images/preview_l3.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s3.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m4.jpg',largeimage: 'images/preview_l4.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s4.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m5.jpg',largeimage: 'images/preview_l5.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s5.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m6.jpg',largeimage: 'images/preview_l6.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s6.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m7.jpg',largeimage: 'images/preview_l7.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s7.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m8.jpg',largeimage: 'images/preview_l8.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s8.jpg"></a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0);"
-                                   rel="{gallery: 'gal1', smallimage: 'images/preview_m9.jpg',largeimage: 'images/preview_l9.jpg'}">
-                                    <img src="<?=Yii::getAlias('@web')?>/images/preview_s9.jpg"></a>
-                            </li>
                         </ul>
                     </div>
 
@@ -1019,7 +962,38 @@ JS
 
 <script type="text/javascript">
 
-
+    document.execCommand("BackgroundImageCache", false, true);
 </script>
 </body>
 </html>
+
+<?php
+//    Yii::$app->view->registerJsFile('/js/jquery-1.11.0.js',['depends' => [\yii\web\JqueryAsset::className()]]);
+//    Yii::$app->view->registerJsFile('/js/header.js',['depends' => [\yii\web\JqueryAsset::className()]]);
+//    Yii::$app->view->registerJsFile('/js/goods.js',['depends' => [\yii\web\JqueryAsset::className()]]);
+//    Yii::$app->view->registerJsFile('/js/jqzoom-core.js',['depends' => [\yii\web\JqueryAsset::className()]]);
+
+//$this->registerJs(new \yii\web\JsExpression(
+//    <<<JS
+// document.execCommand("BackgroundImageCache", false, true);
+//        $('#w0').remove();
+//    $('body div :first').removeAttr("class");
+//    $(function(){
+//        $('footer').remove();
+//        $('#yii-debug-toolbar').remove();
+//    });
+//    <!-- jqzoom 效果 -->
+//        $(function(){
+//            $('.jqzoom').jqzoom({
+//                zoomType: 'standard',
+//                lens:true,
+//                preloadImages: false,
+//                alwaysOn:false,
+//                title:false,
+//                zoomWidth:400,
+//                zoomHeight:400
+//            });
+//        })
+//JS
+//));
+//?>

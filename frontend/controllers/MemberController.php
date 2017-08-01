@@ -17,11 +17,17 @@ class MemberController extends \yii\web\Controller
 public function actionRegister(){
         $model=new Member();
     if($model->load(\Yii::$app->request->post()) && $model->validate()){
-        $model->password_hash= \Yii::$app->security->generatePasswordHash($model->password);
-        $model->auth_key = \Yii::$app->security->generateRandomString();
-        //var_dump($model->getErrors());exit;
-        $model->save(false);
-        return $this->redirect(['member/index']);
+        //验证短信验证码
+        $code2 = \Yii::$app->session->get('code_'.$model->tel);
+        if($model->tel_code == $code2){
+            $model->password_hash= \Yii::$app->security->generatePasswordHash($model->password);
+            $model->auth_key = \Yii::$app->security->generateRandomString();
+            //var_dump($model->getErrors());exit;
+            $model->save(false);
+            return $this->redirect(['member/index']);
+        }else{
+            $model->addError('tel_code','短信验证码错误');
+        }
     }
         //\Yii::$app->layout=false;
         return $this->render('register',['model'=>$model]);
@@ -119,20 +125,16 @@ public function actionRegister(){
             $this->redirect('address');
         }
     }
-    //测试发送短信功能
-    public function actionTestSms()
+    //发送短信功能
+    public function actionSendSms()
     {
-        $code = rand(1000,9999);
-        $tel = '13551167510';
-        $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$code])->send();
-        var_dump($res);exit;
+        //var_dump($_POST['tel']);exit;
+        $code = rand(10000,99999);
+        //$tel = '18328661534';
+        $res = \Yii::$app->sms->setPhoneNumbers($_POST['tel'])->setTemplateParam(['name'=>$code])->send();
+        //var_dump($res);exit;
         //将短信验证码保存redis（session，mysql）
-        \Yii::$app->session->set('code_'.$tel,$code);
-        //验证
-        $code2 = \Yii::$app->session->get('code_'.$tel);
-        if($code == $code2){
-
-        }
+        \Yii::$app->session->set('code_'.$_POST['tel'],$code);
     }
 
 }

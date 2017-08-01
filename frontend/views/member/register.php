@@ -65,12 +65,13 @@
                         <?php echo $form->field($model,'email')->textInput(['class'=>'txt','placeholder'=>'请输入邮箱']);?>
                     </li>
                     <li>
-                        <?php echo $form->field($model,'tel')->textInput(['class'=>'txt','placeholder'=>'请输入电话号码']);?>
+                        <?php echo $form->field($model,'tel')->textInput(['class'=>'txt','placeholder'=>'请输入电话号码','id'=>'tel']);?>
                     </li>
                     <li>
-                        <label for="">验证码：</label>
-                        <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[captcha]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
-
+<!--                        <label for="">验证码：</label>-->
+                        <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px;margin: 0px auto 10px 60px;ma"/>
+                        <?php echo $form->field($model,'tel_code')->textInput(['class'=>'txt','placeholder'=>'请输入短信验证码','disabled'=>"disabled", 'id'=>"captcha"]);?>
+<!--                        <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[captcha]" disabled="disabled" id="captcha"/>-->
                     </li>
                     <li class="checkcode">
                         <?php //验证码
@@ -136,8 +137,17 @@
     function bindPhoneNum(){
         //启用输入框
         $('#captcha').prop('disabled',false);
+        //发送短信
+        console.debug($('#tel').val());
+        var url = 'send-sms';
+        //var data =$('#tel').val() ;
+        var data ={'tel':$('#tel').val()} ;
+        $.post(url,data,function(response){
+            console.debug(response);
+        });
 
-        var time=30;
+
+        var time=60;
         var interval = setInterval(function(){
             time--;
             if(time<=0){
