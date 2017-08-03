@@ -5,7 +5,7 @@
 */
 
 $(function(){
-	
+
 	//减少
 	$(".reduce_num").click(function(){
 		var amount = $(this).parent().find(".amount");
@@ -24,6 +24,9 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
+		//同时修改cookie或者数据库
+        var goods_id=$(this).closest('tr').attr('goods_id');
+        editcart(goods_id,amount.val());
 	});
 
 	//增加
@@ -40,6 +43,9 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
+        //同时修改cookie或者数据库
+        var goods_id=$(this).closest('tr').attr('goods_id');
+        editcart(goods_id,amount.val());
 	});
 
 	//直接输入
@@ -58,6 +64,16 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
-
+		//同时修改cookie或者数据库
+        var goods_id=$(this).closest('tr').attr('goods_id');
+        editcart(goods_id,$(this).val());
 	});
 });
+function editcart(goods_id,amount) {
+    console.debug(1111);
+    var url = 'edit-cart';
+    var data ={'goods_id':goods_id,'amount':amount} ;
+    $.post(url,data,function(response){
+        console.debug(response);
+    });
+}
