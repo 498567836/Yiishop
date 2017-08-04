@@ -45,6 +45,33 @@ public function login(){
             $member->last_login_ip=ip2long(\Yii::$app->request->userIP);
             //var_dump($member->last_login_time=time(),$member->last_login_ip);exit;
             $member->save(false);
+
+            //将cookie购物车同步到数据库
+            $cookies=\Yii::$app->request->cookies;
+            $cart=$cookies->get('cart');
+            if ($cart==null){
+                $carts=[];
+            }else{
+                $carts=unserialize($cart->value);
+            };
+            foreach (array_keys($carts) as $goods_id){
+                //已登录
+                $member_id=$member->id;
+                $model=Cart::find()->where(['=','member_id',$member_id])->andWhere(['=','goods_id',$goods_id])->one();
+                if($model){
+                    $model->amount+=$carts[$goods_id];
+                }else{
+                    $model=new Cart();
+                    $model->member_id=$member_id;
+                    $model->goods_id=$goods_id;
+                    $model->amount=$carts[$goods_id];
+                }
+                $model->save();
+            }
+            //清除cookie中的cart数据
+            $cookies = \Yii::$app->response->cookies;
+            $cookies->remove('cart');
+            //var_dump($carts);exit;
             return true;
         }else{
             $this->addError('password','密码错误');

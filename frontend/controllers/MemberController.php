@@ -24,7 +24,7 @@ public function actionRegister(){
             $model->auth_key = \Yii::$app->security->generateRandomString();
             //var_dump($model->getErrors());exit;
             $model->save(false);
-            return $this->redirect(['member/index']);
+            return $this->redirect(['member/login']);
         }else{
             $model->addError('tel_code','短信验证码错误');
         }
@@ -39,8 +39,7 @@ public function actionRegister(){
         $model = new LoginForm();
         if($model->load(\Yii::$app->request->post()) && $model->validate() && $model->login()){
             //登录成功
-            //var_dump(11111);exit;
-            return $this->redirect(['member/index']);
+            return $this->redirect(['/goods/index']);
         }elseif(\Yii::$app->request->post()){
         }
         return $this->render('login',['model'=>$model]);
@@ -89,15 +88,20 @@ public function actionRegister(){
         ];
     }
     public function actionAddress(){
-        $model=new Address();
-        $modelall=Address::find()->orderBy('status DESC')->all();
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
-            $model->user_id= \Yii::$app->user->id;
-            //var_dump($model->status);exit;
-            $model->save();
-            //var_dump($model->getErrors());exit;
+        if (!\Yii::$app->user->isGuest){
+            $user_id=\Yii::$app->user->id;
+            $model=new Address();
+            $modelall=Address::find()->where(['=','user_id',$user_id])->orderBy('status DESC')->all();
+            if($model->load(\Yii::$app->request->post()) && $model->validate()){
+                $model->user_id= $user_id;
+                //var_dump($model->status);exit;
+                $model->save();
+                //var_dump($model->getErrors());exit;
+                return $this->redirect(['/member/address']);
+            }
+            return $this->render('address',['model'=>$model,'modelall'=>$modelall]);
         }
-        return $this->render('address',['model'=>$model,'modelall'=>$modelall]);
+        return $this->redirect(['/member/login']);
     }
     public function actionEditAddress($id){
         $model=Address::findOne($id);

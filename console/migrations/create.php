@@ -15,5 +15,7 @@
 //yii migrate/create create_member_table
 //yii migrate/create create_address_table
 //yii migrate/create create_cart_table
+//yii migrate/create create_order_table
+//yii migrate/create create_order_goods_table
 //执行
 //yii migrate

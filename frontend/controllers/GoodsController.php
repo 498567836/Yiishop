@@ -6,7 +6,12 @@ use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use frontend\models\Address;
 use frontend\models\Cart;
+use frontend\models\Order;
+use frontend\models\OrderGoods;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\Cookie;
 
@@ -181,11 +186,100 @@ class GoodsController extends Controller
         return $this->redirect(['cart']);
         //return '删除成功';
     }
-    public function actionGetCart(){
+    public function actionGetCart(){//获取cookie中购物车数据
         $cookies = \Yii::$app->request->cookies;
         $cart = unserialize($cookies->get('cart'));
-        var_dump($cart);exit;
+        var_dump( $cart);exit;
+        //var_dump( array_keys($cart));exit;
     }
-
+    public function actionOrder(){
+        $user_id=\Yii::$app->user->id;
+        $address=Address::find()->where(['=','user_id',$user_id])->orderBy('status DESC')->all();
+        $goods_cart=Cart::find()->where(['=','member_id',$user_id])->asArray()->all();
+        $goods_id=[];
+        $carts=[];
+        if ($goods_cart){
+            foreach ($goods_cart as $goods2){
+                $goods_id[]=$goods2['goods_id'];
+                $carts[$goods2['goods_id']]=$goods2['amount'];
+            }
+        }
+        $goods= Goods::find()->where(['in','id',$goods_id])->all();
+        if(\Yii::$app->request->isPost){
+            $address_id=\Yii::$app->request->post('address_id');
+            $delivery_id=\Yii::$app->request->post('delivery');
+            $payment_id=\Yii::$app->request->post('pay');
+            $model=new Order();
+            $transaction = \Yii::$app->db->beginTransaction();
+            $address=Address::findOne(['=','id',$address_id]);
+            try {
+                $model->member_id = $user_id;
+                $model->name = $address->username;
+                $model->province = $address->province;
+                $model->city = $address->city;
+                $model->zone = $address->zone;
+                $model->address = $address->address;
+                $model->tel = $address->tel;
+                $model->delivery_id = $delivery_id;
+                $model->delivery_name = Order::$delivery[$delivery_id]['name'];
+                $model->delivery_price = Order::$delivery[$delivery_id]['price'];
+                $model->payment_id=$payment_id ;
+                $model->payment_name = Order::$pay[$payment_id]['name'];
+                $model->create_time = time();
+                $model->total = $model->delivery_price;
+                if ($payment_id==1 || $payment_id==2){
+                    $model->status =2;
+                }elseif ($payment_id==3){
+                    $model->status =3;
+                }elseif ($payment_id==4){
+                $model->status =1;
+                }
+                foreach ($goods_id as $id){
+                    $goods_buy=Goods::findOne(['=','id',$id]);
+                    if($goods_buy->stock>=$carts[$id]){
+                        $model->total+=$goods_buy->shop_price*$carts[$id];
+                    }else{
+                        throw new Exception('商品库存不足，无法继续下单，请修改购物车商品数量');
+                    }
+                }
+                //var_dump($model);exit;
+                foreach ($goods_id as $id){
+                    $model->save();
+                    $goods_order=new OrderGoods();
+                    $goods_order->order_id=$model->id;
+                    $goods_buy=Goods::findOne(['=','id',$id]);
+                    $goods_order->goods_id=$id;
+                    $goods_order->goods_name=$goods_buy->name;
+                    $goods_order->logo=$goods_buy->logo;
+                    $goods_order->price=$goods_buy->shop_price;
+                    $goods_order->amount=$carts[$id];
+                    $goods_order->total=$goods_buy->shop_price*$carts[$id];
+                    $goods_order->save();
+                    //更新商品库存
+                    $goods_buy->stock-=$carts[$id];
+                    $goods_buy->save();
+                    //更新购物车数据
+                    Cart::deleteAll(['goods_id'=>$id,'member_id'=>$user_id]);
+                }
+                //提交事务
+                $transaction->commit();
+                $status='订单提交成功，我们将及时为您处理';
+                return $this->render('status',['status'=>$status]);
+            }catch (Exception $e) {
+                //回滚
+                $transaction->rollBack();
+                $status='商品库存不足';
+                return $this->render('status',['status'=>$status]);
+            }
+        }else{//get方式访问
+            //var_dump( $goods);exit;
+            return $this->render('order',['address'=>$address,'goods'=>$goods,'carts'=>$carts]);
+        }
+    }
+public function actionOrderList(){
+        $order=Order::find()->where(['member_id'=>\Yii::$app->user->id])->all();
+        //$order_goods=OrderGoods::find()->where(['order_id'=>\Yii::$app->user->id])->all();
+        return $this->render('order-list',['order'=>$order]);
+}
 
 }
