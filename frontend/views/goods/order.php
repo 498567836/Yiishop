@@ -65,9 +65,9 @@
         <div class="address">
             <h3>收货人信息</h3>
             <div class="address_info">
-                <?php foreach ($address as $address2):?>
+                <?php $n=0;foreach ($address as $address2):$n++?>
                 <p>
-                    <input type="radio" <?=($address2->status==1)?'checked':''?> value="<?=$address2->id?>" name="address_id"/><?=$address2->username.' '.$address2->tel.' '.$address2->province.' '.$address2->city.' '.$address2->zone.' '.$address2->address?>
+                    <input type="radio" <?=($n==1)?'checked':''?> value="<?=$address2->id?>" name="address_id"/><?=$address2->username.' '.$address2->tel.' '.$address2->province.' '.$address2->city.' '.$address2->zone.' '.$address2->address?>
                 </p>
                 <?php endforeach;?>
             </div>
@@ -234,18 +234,27 @@
 </div>
 <!-- 底部版权 end -->
 <script type="text/javascript">
+    $(function () {
+        var price= $('#total1').text().replace(',', "");
+        var price1=eval(parseFloat(price)+parseFloat($('.delivery_select').find('td:first').attr('price').replace(',', ""))).toFixed(2);
+        $('#total1').text(price1);
+        console.debug(price1);
+        total();
+    });
+    var price=$('#total1').text().replace(',', "");
     $('.delivery_').click( function () {
-        var delivery =eval($(this).closest('td').attr('price')+$('#total1').text());
+        var delivery =eval(parseFloat(price)+parseFloat($(this).closest('td').attr('price').replace(',', ""))).toFixed(2);
         $('#delivery_2').text('￥'+$(this).closest('td').attr('price'));
-        //$('#total1').text($('#total1').text()+$(this).closest('td').attr('price'));
-        console.debug($(this).closest('td').attr('price'));
-        console.debug($('#total1').text());
-        console.debug(delivery);
+        $('#total1').text(delivery);
+        //console.debug($(this).closest('td').attr('price'));
+        //console.debug($('#total1').text());
+        //console.debug(delivery);
+        total();
     } );
     function total() {
         $('#total2').text($('#total0').text());
     }
-    $(total());
+
 </script>
 </body>
 </html>

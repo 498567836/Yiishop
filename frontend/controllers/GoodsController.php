@@ -10,7 +10,7 @@ use frontend\models\Address;
 use frontend\models\Cart;
 use frontend\models\Order;
 use frontend\models\OrderGoods;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+use yii\data\Pagination;
 use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\Cookie;
@@ -39,8 +39,18 @@ class GoodsController extends Controller
             }
         }
         //var_dump($pid);exit;
-        $model=Goods::find()->where(['in','goods_category_id',$pid])->all();
-        return $this->render('list',['model'=>$model]);
+        $query = Goods::find()->where(['in','goods_category_id',$pid]);
+        //总条数
+        $total = $query->count();
+        //每页显示条数 3
+        $perPage = 2;
+        //分页工具类
+        $pager = new Pagination([
+            'totalCount'=>$total,
+            'defaultPageSize'=>$perPage
+        ]);
+        $model=$query->limit($pager->limit)->offset($pager->offset)->all();
+        return $this->render('list',['model'=>$model,'pager'=>$pager]);
     }
     public function actionShow($id){
         $model=Goods::findOne(['=','id',$id]);
@@ -206,6 +216,10 @@ class GoodsController extends Controller
         }
         $goods= Goods::find()->where(['in','id',$goods_id])->all();
         if(\Yii::$app->request->isPost){
+            if (!$address){
+                //$status='没有选择收货人，没有请添加';
+                return $this->redirect(['/member/address']);
+            }
             $address_id=\Yii::$app->request->post('address_id');
             $delivery_id=\Yii::$app->request->post('delivery');
             $payment_id=\Yii::$app->request->post('pay');
@@ -276,10 +290,35 @@ class GoodsController extends Controller
             return $this->render('order',['address'=>$address,'goods'=>$goods,'carts'=>$carts]);
         }
     }
-public function actionOrderList(){
-        $order=Order::find()->where(['member_id'=>\Yii::$app->user->id])->all();
+    public function actionOrderList(){
+        $query = Order::find()->where(['member_id'=>\Yii::$app->user->id]);
+        //总条数
+        $total = $query->count();
+        //每页显示条数 3
+        $perPage = 3;
+        //分页工具类
+        $pager = new Pagination([
+            'totalCount'=>$total,
+            'defaultPageSize'=>$perPage
+        ]);
+        $order=$query->limit($pager->limit)->offset($pager->offset)->all();
         //$order_goods=OrderGoods::find()->where(['order_id'=>\Yii::$app->user->id])->all();
-        return $this->render('order-list',['order'=>$order]);
-}
+        return $this->render('order-list',['order'=>$order,'pager'=>$pager]);
+    }
+    public function actionOrderShow($order_id){
+        $order_id=isset($order_id)?$order_id:1;
+        $query =OrderGoods::find()->where(['order_id'=>$order_id]);
+        //总条数
+        $total = $query->count();
+        //每页显示条数 3
+        $perPage = 3;
+        //分页工具类
+        $pager = new Pagination([
+            'totalCount'=>$total,
+            'defaultPageSize'=>$perPage
+        ]);
+        $order=$query->limit($pager->limit)->offset($pager->offset)->all();
+        return $this->render('order-show',['order'=>$order,'pager'=>$pager]);
+    }
 
 }

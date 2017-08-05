@@ -432,129 +432,6 @@
     <!-- 面包屑导航 end -->
 
     <!-- 左侧内容 start -->
-    <div class="list_left fl mt10">
-        <!-- 分类列表 start -->
-        <div class="catlist">
-            <h2>电脑、办公</h2>
-            <div class="catlist_wrap">
-                <div class="child">
-                    <h3 class="on"><b></b>电脑整机</h3>
-                    <ul>
-                        <li><a href="">笔记本</a></li>
-                        <li><a href="">超极本</a></li>
-                        <li><a href="">平板电脑</a></li>
-                    </ul>
-                </div>
-
-                <div class="child">
-                    <h3><b></b>电脑配件</h3>
-                    <ul class="none">
-                        <li><a href="">CPU</a></li>
-                        <li><a href="">主板</a></li>
-                        <li><a href="">显卡</a></li>
-                    </ul>
-                </div>
-
-                <div class="child">
-                    <h3><b></b>办公打印</h3>
-                    <ul class="none">
-                        <li><a href="">打印机</a></li>
-                        <li><a href="">一体机</a></li>
-                        <li><a href="">投影机</a></li>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="child">
-                    <h3><b></b>网络产品</h3>
-                    <ul class="none">
-                        <li><a href="">路由器</a></li>
-                        <li><a href="">网卡</a></li>
-                        <li><a href="">交换机</a></li>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="child">
-                    <h3><b></b>外设产品</h3>
-                    <ul class="none">
-                        <li><a href="">鼠标</a></li>
-                        <li><a href="">键盘</a></li>
-                        <li><a href="">U盘</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div style="clear:both; height:1px;"></div>
-        </div>
-        <!-- 分类列表 end -->
-
-        <div style="clear:both;"></div>
-
-        <!-- 新品推荐 start -->
-        <div class="newgoods leftbar mt10">
-            <h2><strong>新品推荐</strong></h2>
-            <div class="leftbar_wrap">
-                <ul>
-                    <li>
-                        <dl>
-                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot1.jpg" alt="" /></a></dt>
-                            <dd><a href="">美即流金丝语悦白美颜新年装4送3</a></dd>
-                            <dd><strong>￥777.50</strong></dd>
-                        </dl>
-                    </li>
-
-                    <li>
-                        <dl>
-                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot2.jpg" alt="" /></a></dt>
-                            <dd><a href="">领券满399减50 金斯利安多维片</a></dd>
-                            <dd><strong>￥239.00</strong></dd>
-                        </dl>
-                    </li>
-
-                    <li class="last">
-                        <dl>
-                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot3.jpg" alt="" /></a></dt>
-                            <dd><a href="">皮尔卡丹pierrecardin 男士长...</a></dd>
-                            <dd><strong>￥1240.50</strong></dd>
-                        </dl>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- 新品推荐 end -->
-
-        <!--热销排行 start -->
-        <div class="hotgoods leftbar mt10">
-            <h2><strong>热销排行榜</strong></h2>
-            <div class="leftbar_wrap">
-                <ul>
-                    <li></li>
-                </ul>
-            </div>
-        </div>
-        <!--热销排行 end -->
-
-        <!-- 最近浏览 start -->
-        <div class="viewd leftbar mt10">
-            <h2><a href="">清空</a><strong>最近浏览过的商品</strong></h2>
-            <div class="leftbar_wrap">
-                <dl>
-                    <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/hpG4.jpg" alt="" /></a></dt>
-                    <dd><a href="">惠普G4-1332TX 14英寸笔记...</a></dd>
-                </dl>
-
-                <dl class="last">
-                    <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/crazy4.jpg" alt="" /></a></dt>
-                    <dd><a href="">直降200元！TCL正1.5匹空调</a></dd>
-                </dl>
-            </div>
-        </div>
-        <!-- 最近浏览 end -->
-    </div>
-    <!-- 左侧内容 end -->
-
-    <!-- 列表内容 start -->
     <div class="list_bd fl ml10 mt10">
         <!-- 热卖、促销 start -->
         <div class="list_top">
@@ -690,39 +567,169 @@
         <div class="goodslist mt10">
             <ul>
                 <?php foreach ($model as $value): ?>
-                <li>
-                    <dl>
-                        <dt>
-                            <?php echo \yii\bootstrap\Html::a(\yii\bootstrap\Html::img($value->logo),['goods/show','id'=>$value->id]);?>
-                        </dt>
-                        <dd><a href=""><?=$value->name?></a></dt>
-                        <dd><strong>￥<?=$value->shop_price?></strong></dt>
-                        <dd><a href=""><em>已有<?=$value->view_times?>人评价</em></a></dt>
-                    </dl>
-                </li>
+                    <li>
+                        <dl>
+                            <dt>
+                                <?php echo \yii\bootstrap\Html::a(\yii\bootstrap\Html::img($value->logo),['goods/show','id'=>$value->id]);?>
+                            </dt>
+                            <dd><a href=""><?=$value->name?></a></dt>
+                            <dd><strong>￥<?=$value->shop_price?></strong></dt>
+                            <dd><a href=""><em>已有<?=$value->view_times?>人评价</em></a></dt>
+                        </dl>
+                    </li>
                 <?php endforeach; ?>
             </ul>
         </div>
         <!-- 商品列表 end-->
 
         <!-- 分页信息 start -->
-        <div class="page mt20">
-            <a href="">首页</a>
-            <a href="">上一页</a>
-            <a href="">1</a>
-            <a href="">2</a>
-            <a href="" class="cur">3</a>
-            <a href="">4</a>
-            <a href="">5</a>
-            <a href="">下一页</a>
-            <a href="">尾页</a>&nbsp;&nbsp;
-            <span>
-					<em>共8页&nbsp;&nbsp;到第 <input type="text" class="page_num" value="3"/> 页</em>
-					<a href="" class="skipsearch" href="javascript:;">确定</a>
-				</span>
+        <div  class="page mt20" style="">
+            <?php
+            //分页工具条
+            echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'末页']);
+            ?>
         </div>
+
+<!--        <div class="page mt20">-->
+<!--            <a href="">首页</a>-->
+<!--            <a href="">上一页</a>-->
+<!--            <a href="">1</a>-->
+<!--            <a href="">2</a>-->
+<!--            <a href="" class="cur">3</a>-->
+<!--            <a href="">4</a>-->
+<!--            <a href="">5</a>-->
+<!--            <a href="">下一页</a>-->
+<!--            <a href="">尾页</a>&nbsp;&nbsp;-->
+<!--            <span>-->
+<!--					<em>共8页&nbsp;&nbsp;到第 <input type="text" class="page_num" value="3"/> 页</em>-->
+<!--					<a href="" class="skipsearch" href="javascript:;">确定</a>-->
+<!--				</span>-->
+<!--        </div>-->
         <!-- 分页信息 end -->
 
+    </div>
+    <!-- 左侧内容 end -->
+
+    <!-- 列表内容 start -->
+    <div class="list_left fl mt10">
+        <!-- 分类列表 start -->
+        <div class="catlist">
+            <h2>电脑、办公</h2>
+            <div class="catlist_wrap">
+                <div class="child">
+                    <h3 class="on"><b></b>电脑整机</h3>
+                    <ul>
+                        <li><a href="">笔记本</a></li>
+                        <li><a href="">超极本</a></li>
+                        <li><a href="">平板电脑</a></li>
+                    </ul>
+                </div>
+
+                <div class="child">
+                    <h3><b></b>电脑配件</h3>
+                    <ul class="none">
+                        <li><a href="">CPU</a></li>
+                        <li><a href="">主板</a></li>
+                        <li><a href="">显卡</a></li>
+                    </ul>
+                </div>
+
+                <div class="child">
+                    <h3><b></b>办公打印</h3>
+                    <ul class="none">
+                        <li><a href="">打印机</a></li>
+                        <li><a href="">一体机</a></li>
+                        <li><a href="">投影机</a></li>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="child">
+                    <h3><b></b>网络产品</h3>
+                    <ul class="none">
+                        <li><a href="">路由器</a></li>
+                        <li><a href="">网卡</a></li>
+                        <li><a href="">交换机</a></li>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="child">
+                    <h3><b></b>外设产品</h3>
+                    <ul class="none">
+                        <li><a href="">鼠标</a></li>
+                        <li><a href="">键盘</a></li>
+                        <li><a href="">U盘</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="clear:both; height:1px;"></div>
+        </div>
+        <!-- 分类列表 end -->
+
+        <div style="clear:both;"></div>
+
+        <!-- 新品推荐 start -->
+        <div class="newgoods leftbar mt10">
+            <h2><strong>新品推荐</strong></h2>
+            <div class="leftbar_wrap">
+                <ul>
+                    <li>
+                        <dl>
+                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot1.jpg" alt="" /></a></dt>
+                            <dd><a href="">美即流金丝语悦白美颜新年装4送3</a></dd>
+                            <dd><strong>￥777.50</strong></dd>
+                        </dl>
+                    </li>
+
+                    <li>
+                        <dl>
+                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot2.jpg" alt="" /></a></dt>
+                            <dd><a href="">领券满399减50 金斯利安多维片</a></dd>
+                            <dd><strong>￥239.00</strong></dd>
+                        </dl>
+                    </li>
+
+                    <li class="last">
+                        <dl>
+                            <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/list_hot3.jpg" alt="" /></a></dt>
+                            <dd><a href="">皮尔卡丹pierrecardin 男士长...</a></dd>
+                            <dd><strong>￥1240.50</strong></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 新品推荐 end -->
+
+        <!--热销排行 start -->
+        <div class="hotgoods leftbar mt10">
+            <h2><strong>热销排行榜</strong></h2>
+            <div class="leftbar_wrap">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+        <!--热销排行 end -->
+
+        <!-- 最近浏览 start -->
+        <div class="viewd leftbar mt10">
+            <h2><a href="">清空</a><strong>最近浏览过的商品</strong></h2>
+            <div class="leftbar_wrap">
+                <dl>
+                    <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/hpG4.jpg" alt="" /></a></dt>
+                    <dd><a href="">惠普G4-1332TX 14英寸笔记...</a></dd>
+                </dl>
+
+                <dl class="last">
+                    <dt><a href=""><img src="<?=Yii::getAlias('@web')?>/images/crazy4.jpg" alt="" /></a></dt>
+                    <dd><a href="">直降200元！TCL正1.5匹空调</a></dd>
+                </dl>
+            </div>
+        </div>
+        <!-- 最近浏览 end -->
     </div>
     <!-- 列表内容 end -->
 </div>
@@ -819,13 +826,27 @@
     </p>
 </div>
 <!-- 底部版权 end -->
-
+<?php
+if (isset($_GET["page"])){
+    $pages=$_GET["page"];
+}else{
+    $pages=1;
+}
+?>
 <script type="text/javascript">
     $('#w0').remove();
+    var page='<?=$pages?>';
     $('body div :first').removeAttr("class");
     $(function(){
         $('footer').remove();
         $('#yii-debug-toolbar').remove();
+        //console.debug(page);
+        $(".pagination").find('a').each(function(){
+            if($(this).text()==page){
+                //console.debug($(this));
+                $(this).attr('class','cur');
+            }
+        });
     });
 </script>
 </body>

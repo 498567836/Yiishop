@@ -484,27 +484,24 @@
                 <thead>
                 <tr>
                     <th width="10%">订单号</th>
-                    <th width="20%">订单商品</th>
-                    <th width="10%">收货人</th>
-                    <th width="20%">订单金额</th>
-                    <th width="20%">下单时间</th>
-                    <th width="10%">订单状态</th>
+                    <th width="20%">商品LOGO</th>
+                    <th width="10%">商品名称</th>
+                    <th width="20%">商品价格</th>
+                    <th width="20%">购买数量</th>
+                    <th width="10%">购买金额</th>
                     <th width="10%">操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($order as $order2): ?>
                 <tr>
-                    <td><a href=""><?=$order2->id?></a></td>
-                    <td><a href=""><img src="<?=\frontend\models\OrderGoods::findOne(['order_id'=>$order2->id])->logo?>" alt="" /></a></td>
-                    <td><?=$order2->name?></td>
-                    <td>￥<?=$order2->total?> <?=$order2->payment_name?></td>
-                    <td><?=date('Y-m-d h:i:s',$order2->create_time)?></td>
-                    <td><?=\frontend\models\Order::$order_status[$order2->status]?></td>
-                    <td>
-                        <a href="<?=\yii\helpers\Url::to(['goods/order-show'])?>?order_id=<?=$order2->id?>">查看</a>                      | <a href="">删除</a><br/>
-                        <a href="">确认收货</a>
-                    </td>
+                    <td><?=$order2->id?></td>
+                    <td><a href=""><img src="<?=$order2->logo?>" alt="" /></a></td>
+                    <td><?=$order2->goods_name?></td>
+                    <td><?=$order2->price?></td>
+                    <td><?=$order2->amount?></td>
+                    <td>￥<?=$order2->total?></td>
+                    <td><a href="">删除</a></td>
                 </tr>
                 <?php endforeach;?>
                 </tbody>
