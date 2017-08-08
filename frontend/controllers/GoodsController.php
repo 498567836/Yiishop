@@ -6,14 +6,17 @@ use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use frontend\components\SphinxClient;
 use frontend\models\Address;
 use frontend\models\Cart;
 use frontend\models\Order;
 use frontend\models\OrderGoods;
 use yii\data\Pagination;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\Cookie;
+use yii\web\NotFoundHttpException;
 
 class GoodsController extends Controller
 {
@@ -24,22 +27,45 @@ class GoodsController extends Controller
          //var_dump($model);exit;
          return $this->render('index',['model'=>$model]);
      }
-    public function actionList($id){
-         $pid=[];
-        $pid_0=GoodsCategory::find()->select('id')->where(['=','parent_id',$id])->all();
-        if(empty($pid_0)){
-            $pid[]=$id;
-        }else{
-            foreach ($pid_0 as $id_0){
-                $pid[]=$id_0->id;
-                $pid_1=GoodsCategory::find()->select('id')->where(['=','parent_id',$id_0->id])->all();
-                foreach ($pid_1 as $id_1){
-                    $pid[]=$id_1->id;
-                }
-            }
-        }
+    public function actionList(){
+         if (\YII::$app->request->get('id')){
+             $pid=[];
+             $id=\Yii::$app->request->get('id');
+             $pid_0=GoodsCategory::find()->select('id')->where(['=','parent_id',$id])->all();
+             if(empty($pid_0)){
+                 $pid[]=$id;
+             }else{
+                 foreach ($pid_0 as $id_0){
+                     $pid[]=$id_0->id;
+                     $pid_1=GoodsCategory::find()->select('id')->where(['=','parent_id',$id_0->id])->all();
+                     foreach ($pid_1 as $id_1){
+                         $pid[]=$id_1->id;
+                     }
+                 }
+             }
+             $query = Goods::find()->where(['in','goods_category_id',$pid]);
+         }elseif(\YII::$app->request->get('keyword')){
+             $keyword=\YII::$app->request->get('keyword');
+             $cl = new SphinxClient();
+             $cl->SetServer ( '127.0.0.1', 9312);
+             //$cl->SetConnectTimeout ( 10 );
+             $cl->SetArrayResult ( true );
+// $cl->SetMatchMode ( SPH_MATCH_ANY);
+             $cl->SetMatchMode ( SPH_MATCH_ALL);//匹配搜索
+             $cl->SetLimits(0, 1000);
+             //$info = '索尼电视';
+             $res = $cl->Query($keyword, 'goods');//shopstore_search
+//print_r($cl);
+             //var_dump($res);exit;
+             if (isset($res["matches"])){
+                 $goods_id=ArrayHelper::getColumn($res['matches'],'id');
+             }else{
+                 $goods_id=[];
+             }
+             //print_r($pid);exit;
+             $query = Goods::find()->where(['in','id',$goods_id]);
+         }
         //var_dump($pid);exit;
-        $query = Goods::find()->where(['in','goods_category_id',$pid]);
         //总条数
         $total = $query->count();
         //每页显示条数 3
@@ -319,6 +345,21 @@ class GoodsController extends Controller
         ]);
         $order=$query->limit($pager->limit)->offset($pager->offset)->all();
         return $this->render('order-show',['order'=>$order,'pager'=>$pager]);
+    }
+    //测试coreseek搜索
+    public function actionTest()
+    {
+        $cl = new SphinxClient();
+        $cl->SetServer ( '127.0.0.1', 9312);
+        //$cl->SetConnectTimeout ( 10 );
+        $cl->SetArrayResult ( true );
+// $cl->SetMatchMode ( SPH_MATCH_ANY);
+        $cl->SetMatchMode ( SPH_MATCH_ALL);
+        $cl->SetLimits(0, 1000);
+        $info = '索尼电视';
+        $res = $cl->Query($info, 'goods');//shopstore_search
+//print_r($cl);
+        print_r($res);
     }
 
 }
